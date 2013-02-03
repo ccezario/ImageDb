@@ -47,6 +47,10 @@ public class Application extends Controller {
 		return ok(views.html.createImage.render(imageForm, Category.all()));
 	}
 	
+	public static Result imageDetail(Long id) {
+		return ok(views.html.imageDetail.render(Image.find.byId(id)));
+	}
+	
     public static Result listImages(int page, String sortBy, String order) {
         return ok(
             views.html.index.render(

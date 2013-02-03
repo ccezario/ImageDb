@@ -50,7 +50,8 @@
             		@if(i.resolution=="thumb"){
             			<div class="span4">
               				<p><img src="@routes.Assets.at(i.link)"></p>
-              				<p><a class="btn" href="#">View details &raquo;</a></p>
+              				<p>@i.image.name</p>
+              				<p><a class="btn" href="@routes.Application.imageDetail(i.image.id)">View details &raquo;</a></p>
             			</div><!--/span-->
             		}
             	}

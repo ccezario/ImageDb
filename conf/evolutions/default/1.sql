@@ -11,7 +11,7 @@ create table category (
 
 create table child_image (
   id                        bigint not null,
-  image_id                  bigint not null,
+  image_id                  bigint,
   resolution                varchar(255),
   link                      varchar(255),
   constraint pk_child_image primary key (id))

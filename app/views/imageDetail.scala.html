@@ -1,0 +1,20 @@
+@(imageForm: models.Image)
+@import helper._
+@import models.Category
+@main("Images") {
+    
+    <h2>Image</h2>
+    
+    <div>
+        <p> Nome: @imageForm.name </p>
+        <p> Orientação: @imageForm.orientation </p>
+        <p> <input type="checkBox" id="isEditorial" name="isEditorial" value="true" >  Editorial </input> </p>
+        <p> <input type="checkBox" id="isPopulated" name="isPopulated" value="true" >  Pessoas </input> </p>
+        <p> Categorias: @imageForm.category
+        </p>
+        <p> Termo de Uso: @imageForm.useTerm </p>
+        <p> Tags: @imageForm.tag </p>
+        <p> Data de Validade: @imageForm.valDate </p>
+       <p> <input type="submit" value="edit"> </p>
+    </div>
+}
