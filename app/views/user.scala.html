@@ -1,0 +1,14 @@
+@(userForm: Form[Account.UserForm])
+@import helper._
+@main("Users") {
+    
+    <h2>editar usuário</h2>
+    
+    @form(action = routes.Account.editUser()) {
+        <p> Usuário: <input type="text" id="login" name="login" value="@userForm("login").value" > </p>
+        <p> Password: <label id="password" name="password" value="@userForm("password").value" > </p>
+        <p> E-mail: <label id="email" name="email" value="@userForm("email").value" > </p>
+        <p> Perfil: <label id="role" name="role" value="@userForm("role").value" > </p>
+        <p> <input type="submit" value="Ok"> </p>
+    }
+}

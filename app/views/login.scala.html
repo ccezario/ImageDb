@@ -1,0 +1,42 @@
+@(userForm: Form[Account.LoginForm])
+@main("Users") {
+    <div class="container">
+    	@helper.form(action = routes.Account.authenticate(), 'class -> "form-signin", 'id -> "user") {
+    		<div class="alert alert-block alert-error" id="error" hidden> 
+				<a class="close" data-dismiss="alert" id="closeError" href="">X</a>
+				<h4 class="alert-heading">Erro!</h4> 
+				<div id="erro"> 
+					@if(userForm.hasGlobalErrors) {
+						@userForm.globalError.message
+					}
+				</div> 
+			</div>
+    		<h2 class="form-signin-heading">Please sign in</h2>
+        	<input class="input-block-level" type="text" placeholder="Login" id="login" name="login" value="@userForm("login").value" > </p>
+        	<input class="input-block-level" type="password" placeholder="Password" id="password" name="password" > </p>
+        	<input class="btn btn-large btn-primary" type="submit" value="Login"> </p>
+        	<a href=@{routes.Account.newUser()}>crie seu usuário</a>
+    	}
+    </div>
+    
+    <script type="text/javascript">
+	$('#user').submit(function() {
+		if($("#login").val() == ""){
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("Usuário Inválido");
+			return false;
+		}
+		if($("#password").val() == ""){
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("Password diferente da confirmação");
+			return false;
+		}
+	});
+	$("#closeError").live("click", function(){
+		$("#error").attr("hidden",true);
+	});
+
+	</script>
+}

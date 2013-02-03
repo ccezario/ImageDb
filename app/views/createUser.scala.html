@@ -1,0 +1,56 @@
+@(userForm: Form[Account.UserForm])
+@import helper._
+@main("Users") {
+    
+	<div class="alert alert-block alert-error" id="error" hidden> 
+		<a class="close" data-dismiss="alert" id="closeError" href="">X</a>
+		<h4 class="alert-heading">Erro!</h4> <div id="textoErro"></div> 
+	</div>
+   	
+   	@form(action = routes.Account.newUser(), 'class -> "well", 'id -> "user") {
+  		<h2 class="well-heading">Cadastrar Usuário</h2>
+        <input type="text" id="login" name="login" value="" class="span3" placeholder="Login"> <br>
+        <input type="password" id="password" name="password" class="span3" placeholder="Password"> 
+        <input type="password" id="confirm" name="confirm"  class="span3" placeholder="Confirme o Password" > <br>
+        <input type="text" id="email" name="email" class="span3" placeholder="E-mail"> <br>
+        <select id="role" name="role" class="span3">  
+        	<option value="1"> Administrador </option> 
+        	<option value="2"> RH </option> 
+        	<option value="3"> Usuário </option>
+        </select>
+        <div class="controls">
+             <input type="submit" class="btn btn-primary"/>
+        </div>
+    }
+    
+    <script type="text/javascript">
+		$('#user').submit(function() {
+			if($("#login").val() == ""){
+				$("#textoErro").empty();
+				$("#error").attr("hidden",false);
+				$("#textoErro").append("Usuário Inválido");
+				return false;
+			}
+			if($("#password").val() != $("#confirm").val()){
+				$("#textoErro").empty();
+				$("#error").attr("hidden",false);
+				$("#textoErro").append("Password diferente da confirmação");
+				return false;
+			}
+			if($("#password").val().length < 4){
+				$("#textoErro").empty();
+				$("#error").attr("hidden",false);
+				$("#textoErro").append("Password deve ter pelo menos 4 digitos");
+				return false;
+			}
+			if($("#email").val() == ""){
+				$("#error").attr("hidden",false);
+				$("#textoErro").append("E-mail Inválido");
+				return false;
+			}
+		});
+		$("#closeError").live("click", function(){
+			$("#error").attr("hidden",true);
+		});
+	</script>
+}

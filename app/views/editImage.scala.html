@@ -1,0 +1,25 @@
+@(imageForm: Form[Image], categories: List[Category])
+@import helper._
+@main("Images") {
+    
+    <h2>Add a new imagem</h2>
+    
+    @form(action = routes.Application.editImage(), 'enctype -> "multipart/form-data") {
+        <p> Nome: <input type="text" id="name" name="name" value="" > </p>
+        <p> Orientação: <select id="orientation" name="orientation" >  <option value="1"> Horizontal </option> <option value="2"> Vertical </option></select> </p>
+        <p> <input type="checkBox" id="isEditorial" name="isEditorial" value="true" >  Editorial </input> </p>
+        <p> <input type="checkBox" id="isPopulated" name="isPopulated" value="true" >  Pessoas </input> </p>
+        <p> Categorias: <select id="category" name="category" >
+          		@for(cat <- categories){
+      				<option value = @cat.id>
+        				@cat.name
+      				</option>
+  				} </select>
+  		</p>
+        <p> Termo de Uso: </p> <p> <textarea rows="5" cols="50" id="useTerm" name="useTerm" value="" > </textarea> </p>
+        <p> Tags: </p> <p> <textarea rows="2" cols="50" id="tags" name="tags" value="" > </textarea> </p>
+        <p> Data de Validade: <input type="text" id="valDate" name="valDate" value="" > </p>
+        <p> Arquivo: <input type="file" name="picture" />       
+       <p> <input type="submit" value="edit"> </p>
+    }
+}

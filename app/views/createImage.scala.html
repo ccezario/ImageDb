@@ -1,0 +1,69 @@
+@(imageForm: Form[Image], categories: List[Category])
+@import helper._
+@main("Images") {
+    
+    @form(action = routes.Application.newImage(), 'enctype -> "multipart/form-data", 'class -> "well", 'id -> "image") {
+        @if(imageForm.hasGlobalErrors) {
+      		<p class="error">
+       			@imageForm.globalError.message
+      		</p>
+    	}
+    	<div id="error"></div>
+        <h2 class="well-heading">Nova Imagem</h2>
+        <input class="input-block-level" type="text" placeholder="Nome" id="name" name="name" value="" >
+        <select id="orientation" name="orientation" >  <option value="1"> Horizontal </option> <option value="2"> Vertical </option></select>
+        <label class="checkbox">
+        	<input type="checkBox" id="isEditorial" name="isEditorial" value="true" >  Editorial
+        </label>
+        <label class="checkbox">
+        	<input type="checkBox" id="isPopulated" name="isPopulated" value="true" >  Pessoas
+        </label>
+        <div class="control-group">  
+            <label class="control-label" for="multiSelect">Categorias</label>  
+            <div class="controls">  
+            	<select multiple="multiple" id="multiSelect" name="category">  
+        			@for(cat <- categories){
+      					<option value = @cat.id>
+        					@cat.name
+      					</option>
+  					}
+              	</select>  
+            </div>  
+        </div> 
+  		<textarea class="input-block-level" placeholder="Termo de uso" rows="5" cols="50" id="useTerm" name="useTerm" value="" > </textarea>
+        <textarea class="input-block-level" rows="2" cols="50" id="tags" name="tags" value="" > </textarea>
+        <input type="text" class="input-block-level" id="valDate" name="valDate" value="" >
+        <input type="file" class="input-block-level" id="picture" name="picture" />       
+        <input class="btn" type="submit" value="Create">
+    }
+    <script type="text/javascript">
+	$('#image').submit(function() {
+		if($("#name").val() == ""){
+            var output="";
+            output += "<li>"+"preencher nome"+"</li>";
+			return $("#error").append($(output));
+		}
+		if($("#multiSelect").val() == null){ 
+            var output="";
+        	output += "<li>"+"escolher pelo menos uma categoria"+"</li>";
+			return $("#error").append($(output));
+		}
+		if($("#useTerm").val() == ""){ 
+            var output="";
+        	output += "<li>"+"digite o termo de uso da imagem"+"</li>";
+			return $("#error").append($(output));
+		}
+		if($("#valDate").val() == ""){ 
+            var output="";
+        	output += "<li>"+"escolher pelo menos uma categoria"+"</li>";
+			return $("#error").append($(output));
+		}
+		if($("#picture").val() == ""){ 
+            var output="";
+        	output += "<li>"+"escolher pelo menos uma categoria"+"</li>";
+			return $("#error").append($(output));
+		}
+	});
+
+	</script>
+}

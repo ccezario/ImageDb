@@ -1,0 +1,66 @@
+@(message: String, taskForm: Form[Account.UserForm])
+@import helper._
+@main("Users") {
+
+<!-- 	<div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a id="titleLink" class="brand" href="/">@message.toUpperCase</a>
+            </div>
+        </div>
+    </div> -->
+    
+    <div class="container">
+     	<div class="span8"> 
+     		<table class="table table-striped"> 
+     			<thead> 
+     				<tr> 
+     					<th>Login</th> 
+     					<th>Senha</th> 
+     					<th>Email</th> 
+     					<th>Perfil</th>
+     					<th>Ativo</th>
+     					<th>Aprovado</th> 
+     				</tr> 
+     			</thead> 
+     			<tbody id="users"></tbody>
+     		</table> 
+     	</div>
+  	</div>
+
+ <script type="text/javascript">
+	  $(function() {
+		  	return $.get("/usuarios", function(data) {
+		    	return $.each(data, function(index, users) {
+		            var output="";
+		            output += "<tr><td>" + users.login + "</td><td>" + users.password + "</td><td>" + 
+		            users.email + "</td><td>" + users.role + "</td><td><input type=checkbox id=isActive"+ 
+		            users.login+" value="+users.login+" onclick=active(value) checked="+users.isActive+
+		            "> </td><td>"+"<input type=checkbox id=isApproved"+users.login+" value="+users.login+
+		            " onclick=approve(value) checked="+users.isApproved+" disabled="+users.isApproved+"> </td></tr>";
+		            return $("#users").append($(output));
+
+		    	});
+		  	});
+		});
+	</script>
+	<script type="text/javascript">
+
+	var active = function(value) {
+	    if (!confirm("Confirma ativação?")){
+	        $(getElementById("isActive"+value)).attr("checked",false);
+	    } else {
+	        $(getElementById("isActive"+value)).attr("checked",true);
+	    }
+	};
+	var approve = function(value) {
+	    if (confirm("Confirma Aprovação?")){
+	        $(document.getElementById("isApproved"+value)).attr("checked",true);
+	        $(document.getElementById("isApproved"+value)).attr("disabled",true);
+	        $(document.getElementById("isActive"+value)).attr("disabled",false);
+	    } else {
+	        $(document.getElementById("isApproved"+value)).attr("checked",false);
+	    }
+	};
+</script>
+}

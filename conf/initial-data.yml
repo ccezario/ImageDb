@@ -1,0 +1,23 @@
+models.User:
+    login: 1
+    password: 1
+    email: 1@1
+    isActive: true
+    isApproved: true
+    role: 1
+    
+models.User:
+    login: 2
+    password: 2
+    email: 2@2
+    isActive: true
+    isApproved: true
+    role: 2
+    
+models.User:
+    login: 3
+    password: 3
+    email: 3@3
+    isActive: true
+    isApproved: true
+    role: 3

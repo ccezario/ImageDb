@@ -1,0 +1,32 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Home.index(p:Int ?= 0, s ?= "id", o ?= "asc")
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Image
+GET     /imagens                 	controllers.Home.index(p:Int ?= 0, s ?= "id", o ?= "asc")
+GET		/imagem						controllers.Application.index()
+GET		/imagem/edit/:id			controllers.Application.image(id: Long)
+POST    /imagem                  	controllers.Application.newImage()
+POST    /imagens/:id/delete      	controllers.Application.deleteImage(id: Long)
+POST	/imagens/edit				controllers.Application.editImage()
+POST	/filtros					controllers.Application.filtros(filtro:Int, value:Int)
+
+# Auth
+
+GET		/login						controllers.Account.login()
+POST 	/login						controllers.Account.authenticate()
+GET		/logout						controllers.Account.logout()
+
+# User
+GET 	/usuario					controllers.Account.user()
+GET 	/usuarios					controllers.Account.userList()
+GET 	/users						controllers.Account.users()
+POST 	/usuario					controllers.Account.newUser()
+POST 	/usuario/edit				controllers.Account.editUser()
+POST 	/usuarios/:login/delete		controllers.Account.deleteUser(login: String)
