@@ -1,20 +1,28 @@
-@(imageForm: models.Image)
+@(image: models.Image, user: models.User)
 @import helper._
 @import models.Category
-@main("Images") {
+@main("Images", user)  {
     
-    <h2>Image</h2>
-    
-    <div>
-        <p> Nome: @imageForm.name </p>
-        <p> Orientação: @imageForm.orientation </p>
-        <p> <input type="checkBox" id="isEditorial" name="isEditorial" value="true" >  Editorial </input> </p>
-        <p> <input type="checkBox" id="isPopulated" name="isPopulated" value="true" >  Pessoas </input> </p>
-        <p> Categorias: @imageForm.category
+    <div class="container-fluid">
+    	<div class="container">
+    	@for(childImage <- image.childImage){
+    		@if(childImage.resolution == "thumb"){
+    			<img src=@routes.Assets.at(childImage.link) >
+    		}
+    		<a href=@routes.Assets.at(childImage.link)>Link</a>
+    	}
+    	<p> Nome: @image.name </p>
+        <p> Orienta&#231;&#227;o: @if(image.orientation==1){horizontal}else{vertical} </p>
+        <p> <input type="checkBox" id="isEditorial" name="isEditorial" checked=@image.isEditorial disabled>  Editorial </input> </p>
+        <p> <input type="checkBox" id="isPopulated" name="isPopulated" checked=@image.isPopulated disabled>  Pessoas </input> </p>
+        <p> Categorias: 
+        	@for(cat <- image.category){
+        		@cat.name
+        	}
         </p>
-        <p> Termo de Uso: @imageForm.useTerm </p>
-        <p> Tags: @imageForm.tag </p>
-        <p> Data de Validade: @imageForm.valDate </p>
-       <p> <input type="submit" value="edit"> </p>
+        <p> Termo de Uso: @image.useTerm </p>
+        <p> Tags: @image.tag </p>
+        <p> Data de Validade: @image.valDate.format("dd/MM/yyyy") </p>
+    	</div>
     </div>
 }

@@ -1,37 +1,22 @@
-@(currentPage: com.avaje.ebean.Page[models.ChildImage], 
+@(currentPage: com.avaje.ebean.Page[models.ChildImage],
   currentSortBy: String, currentOrder: String, user: models.User, categories: List[models.Category])
 @import helper._
-@main("Images") {
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="">ImageDB</a>
-          <div class="nav-collapse collapse">
-            <p class="navbar-text pull-right">
-              Logged in as <a href="/logout" class="navbar-link">@user.login</a>
-            </p>
-            <ul class="nav">
-              <li class="active"><a href="">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-    
+@main("Images", user) {
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Filtros</li>
-              <li>Posição</li>
+              <li>Tipo de imagem</li>
+              <li>
+              	<input type="checkbox" id="photo" value="1" onclick="@{routes.Application.filtros(1,1)}" > Fotos </input>
+              </li><li>
+              	<input type="checkbox" id="ilustration" value="2" onclick="approve(value)" > Ilustra&#231;&#245;es </input>
+              </li><li>
+              	<input type="checkbox" id="vector" value="2" onclick="approve(value)" > Vetores </input>
+              </li>
+              <li>Posi&#231;&#227;o</li>
               <li>
               	<input type="checkbox" id="horizontal" value="1" onclick="@{routes.Application.filtros(1,1)}" > Horizontal </input>
               </li><li>
@@ -41,21 +26,28 @@
        			@for(cat <- categories){
       				<li><input type="checkbox" value=@cat.id>@cat.name</input></li>
 				}
+			  <li>Segmentos</li>
+       			@for(cat <- categories){
+      				<li><input type="checkbox" value=@cat.id>@cat.name</input></li>
+				}
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
 		<div class="span9">
-          <div class="row-fluid">
-            	@for(i <- currentPage.getList) {
-            		@if(i.resolution=="thumb"){
-            			<div class="span4">
-              				<p><img src="@routes.Assets.at(i.link)"></p>
-              				<p>@i.image.name</p>
-              				<p><a class="btn" href="@routes.Application.imageDetail(i.image.id)">View details &raquo;</a></p>
-            			</div><!--/span-->
+			<div class="row-fluid">
+				<ul class="thumbnails">
+           			@for(i <- currentPage.getList) {
+           				@if(i.resolution=="thumb"){
+							<li class="span4">
+								<a href="@routes.Application.imageDetail(i.image.id)" class="thumbnail">
+              						<img src="@routes.Assets.at(i.link)">
+              						@i.image.name
+              					</a>
+            				</li>
+            			}
             		}
-            	}
-          </div><!--/row-->
+            	</ul>
+            </div>
         </div><!--/span-->
       </div><!--/row-->
 

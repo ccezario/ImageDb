@@ -13,10 +13,12 @@ GET     /imagens                 	controllers.Home.index(p:Int ?= 0, s ?= "id", 
 GET		/imagem						controllers.Application.index()
 GET		/imagem/edit/:id			controllers.Application.image(id: Long)
 GET		/imagem/detail/:id			controllers.Application.imageDetail(id: Long)
+POST	/search/					controllers.Application.listImages()
 POST    /imagem                  	controllers.Application.newImage()
 POST    /imagens/:id/delete      	controllers.Application.deleteImage(id: Long)
 POST	/imagens/edit				controllers.Application.editImage()
 POST	/filtros					controllers.Application.filtros(filtro:Int, value:Int)
+
 
 # Auth
 
@@ -25,9 +27,12 @@ POST 	/login						controllers.Account.authenticate()
 GET		/logout						controllers.Account.logout()
 
 # User
-GET 	/usuario					controllers.Account.user()
+GET 	/usuario					controllers.Account.createUser()
+GET		/user/request				controllers.Account.requestUser()
 GET 	/usuarios					controllers.Account.userList()
 GET 	/users						controllers.Account.users()
+GET		/usuario/edit/:login		controllers.Account.edit(login: String)
 POST 	/usuario					controllers.Account.newUser()
-POST 	/usuario/edit				controllers.Account.editUser()
-POST 	/usuarios/:login/delete		controllers.Account.deleteUser(login: String)
+POST	/user/request				controllers.Account.requestNewUser()
+POST	/usuario/edit				controllers.Account.editUser()
+GET 	/usuario/:login/delete		controllers.Account.deleteUser(login: String)

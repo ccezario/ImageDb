@@ -1,5 +1,6 @@
 import static org.imgscalr.Scalr.resize;
 import play.*;
+import play.api.libs.Crypto;
 import play.libs.*;
 import com.avaje.ebean.Ebean;
 import models.*;
@@ -20,9 +21,9 @@ public class Global extends GlobalSettings {
     public void onStart(Application app){
         // Check if the database is empty
         if (User.find.findRowCount() == 0) {
-            User.create(new User("1","1","1@1.com",true,true,1));
-            User.create(new User("2","2","2@2.com",true,true,2));
-            User.create(new User("3","3","3@3.com",true,true,3));
+            User.create(new User("1",Crypto.sign("1"),"1@1.com",true,true,1));
+            User.create(new User("2",Crypto.sign("2"),"2@2.com",true,true,2));
+            User.create(new User("3",Crypto.sign("3"),"3@3.com",true,true,3));
         }
         if (Category.find.findRowCount() == 0) {
         	Category.create(new Category("Polinesia"));
@@ -523,17 +524,6 @@ public class Global extends GlobalSettings {
         		ctList.add(Category.findByName("Yosemite"));
         		Image.create(new Image("DCS_0999", 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
         			ciList, "praia, bora, pacifico, resort", ctList));
-        		// outra imagem
-
-
-
-
-
-
-
-
-
-
         	} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -542,7 +532,7 @@ public class Global extends GlobalSettings {
     }
     
 	public static BufferedImage createThumbnail(BufferedImage img) {
-		img = resize(img, Method.ULTRA_QUALITY, Mode.FIT_TO_WIDTH, 250, 200);
+		img = resize(img, Method.ULTRA_QUALITY, Mode.FIT_TO_WIDTH, 144);
 		return img;
 	}
 	

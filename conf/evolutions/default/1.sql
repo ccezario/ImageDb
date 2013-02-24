@@ -39,6 +39,12 @@ create table user (
   constraint pk_user primary key (login))
 ;
 
+
+create table image_category (
+  image_id                       bigint not null,
+  category_id                    bigint not null,
+  constraint pk_image_category primary key (image_id, category_id))
+;
 create sequence category_seq;
 
 create sequence child_image_seq;
@@ -52,6 +58,10 @@ create index ix_child_image_image_1 on child_image (image_id);
 
 
 
+alter table image_category add constraint fk_image_category_image_01 foreign key (image_id) references image (id) on delete restrict on update restrict;
+
+alter table image_category add constraint fk_image_category_category_02 foreign key (category_id) references category (id) on delete restrict on update restrict;
+
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
@@ -61,6 +71,8 @@ drop table if exists category;
 drop table if exists child_image;
 
 drop table if exists image;
+
+drop table if exists image_category;
 
 drop table if exists user;
 

@@ -49,8 +49,8 @@ public class ChildImage extends Model {
 	public static Page<ChildImage> page(int page, int pageSize, String sortBy,
 			String order, List<Image> images) {
 		return find.where().eq("resolution", "thumb")
+				.in("image", images)
 				.orderBy(sortBy + " " + order).findPagingList(pageSize)
 				.getPage(page);
 	}
-  
 }

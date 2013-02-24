@@ -1,9 +1,21 @@
-@(userForm: Form[Account.UserForm], user: models.User)
+@(userForm: Form[Account.UserForm])
 @import helper._
-@main("Cadastrar usuário", user) {
+<!DOCTYPE html>
+
+<html>
+    <head>
+    	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Login</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/jquery.validate.js")" type="text/javascript"></script>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+    </head>
+    <body>
     <div class="container-fluid">
     	<div class="container">
-   	   		@form(action = routes.Account.newUser(), 'class -> "well", 'id -> "user") {
+   	   		@form(action = routes.Account.requestNewUser(), 'class -> "well", 'id -> "user") {
    	   		    <div class="alert alert-block alert-error" id="error" @if(!userForm.hasGlobalErrors) {hidden}> 
 					<a class="close" data-dismiss="alert" id="closeError" href="">X</a>
 					<h4 class="alert-heading">Erro!</h4> 
@@ -39,7 +51,7 @@
 			if($("#password").val() != $("#confirm").val()){
 				$("#textoErro").empty();
 				$("#error").attr("hidden",false);
-				$("#textoErro").append("Password diferente da confirmação");
+				$("#textoErro").append("Password diferente da confirmaÃ§Ã£o");
 				return false;
 			}
 			if($("#password").val().length < 4){
@@ -50,7 +62,7 @@
 			}
 			if($("#email").val() == ""){
 				$("#error").attr("hidden",false);
-				$("#textoErro").append("E-mail Inválido");
+				$("#textoErro").append("E-mail InvÃ¡lido");
 				return false;
 			}
 		});
@@ -58,4 +70,5 @@
 			$("#error").attr("hidden",true);
 		});
 	</script>
-}
+    </body>
+</html>

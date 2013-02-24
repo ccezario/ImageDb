@@ -1,8 +1,20 @@
 @(userForm: Form[Account.LoginForm])
-@main("Users") {
+<!DOCTYPE html>
+
+<html>
+    <head>
+    	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Login</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/jquery.validate.js")" type="text/javascript"></script>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+    </head>
+    <body>
     <div class="container">
     	@helper.form(action = routes.Account.authenticate(), 'class -> "form-signin", 'id -> "user") {
-    		<div class="alert alert-block alert-error" id="error" hidden> 
+    		<div class="alert alert-block alert-error" id="error" @if(!userForm.hasGlobalErrors) {hidden}> 
 				<a class="close" data-dismiss="alert" id="closeError" href="">X</a>
 				<h4 class="alert-heading">Erro!</h4> 
 				<div id="erro"> 
@@ -11,12 +23,19 @@
 					}
 				</div> 
 			</div>
-    		<h2 class="form-signin-heading">Please sign in</h2>
-        	<input class="input-block-level" type="text" placeholder="Login" id="login" name="login" value="@userForm("login").value" > </p>
-        	<input class="input-block-level" type="password" placeholder="Password" id="password" name="password" > </p>
-        	<input class="btn btn-large btn-primary" type="submit" value="Login"> </p>
-        	<a href=@{routes.Account.newUser()}>crie seu usuário</a>
+    		<h4 class="form-signin-heading">Login</h4>
+        	<input class="input-block-level" type="text" placeholder="UsuÃ¡rio" id="login" name="login" value="@userForm("login").value" >
+        	<input class="input-block-level" type="password" placeholder="Senha" id="password" name="password" >
+        	<input class="input-block-level" type="checkbox" id="remember"> 
+        	<label class="input-block-level" for="remember">Lembre de mim</label>
+        	<a class="link-form" href="">esqueci minha senha</a>
+        	<input class="btn btn-primary" type="submit" value="Login">
     	}
+    	<div class="cad-center" >
+    		<a href="@{routes.Account.requestUser()}">
+    			<input class="btn btn-primary" type="button" onclick="@{routes.Account.newUser()}" value="Cadastre-se">
+    		</a>
+    	</div>
     </div>
     
     <script type="text/javascript">
@@ -24,13 +43,13 @@
 		if($("#login").val() == ""){
 			$("#erro").empty();
 			$("#error").attr("hidden",false);
-			$("#erro").append("Usuário Inválido");
+			$("#erro").append("Digite o usuÃ¡rio");
 			return false;
 		}
 		if($("#password").val() == ""){
 			$("#erro").empty();
 			$("#error").attr("hidden",false);
-			$("#erro").append("Password diferente da confirmação");
+			$("#erro").append("Digite a Senha");
 			return false;
 		}
 	});
@@ -39,4 +58,6 @@
 	});
 
 	</script>
-}
+    </body>
+</html>
+	

@@ -28,6 +28,7 @@ public class Image extends Model {
 	@OneToMany(cascade=CascadeType.ALL)
 	public List<ChildImage> childImage;
 	public String tag;
+	@ManyToMany(cascade=CascadeType.PERSIST)
 	public List<Category> category;
     
 	
@@ -67,5 +68,9 @@ public class Image extends Model {
 	
 	public static List<Image> filterImages() {
 		return find.all();
+	}
+	
+	public static List<Image> findByTag(String search) {
+		return find.where().like("tag", "%"+search+"%").findList();
 	}
 }

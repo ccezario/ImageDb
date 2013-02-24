@@ -1,6 +1,6 @@
-@(imageForm: Form[Image], categories: List[Category])
+@(imageForm: Form[Image], categories: List[Category], user: models.User)
 @import helper._
-@main("Images") {
+@main("Images", user) {
     
     <h2>Add a new imagem</h2>
     

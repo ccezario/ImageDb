@@ -15,6 +15,7 @@ import models.Category;
 import models.ChildImage;
 import models.User;
 import play.data.Form;
+import play.data.validation.Constraints.Required;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
@@ -26,40 +27,41 @@ import static org.imgscalr.Scalr.*;
 public class Application extends Controller {
 
 	static Form<Image> imageForm = form(Image.class);
+	static Form<SearchForm> searchForm = form(SearchForm.class);
 
-	public static BufferedImage createThumbnail(BufferedImage img) {
-		img = resize(img, Method.ULTRA_QUALITY, Mode.FIT_TO_WIDTH, 250, 200);
-		return img;
-	}
-	
-	public static BufferedImage createLowResolution(BufferedImage img) {
-		img = resize(img, Method.ULTRA_QUALITY, Mode.FIT_TO_WIDTH, 1500, 1000);
-		return img;
-	}
-	
+	//get: /imagem
 	@Security.Authenticated(Secured.class)
 	public static Result index() {
-		return ok(views.html.createImage.render(imageForm, Category.all()));
+		return ok(views.html.createImage.render(imageForm, Category.all(), User.findByLogin((request().username()))));
 	}
 	
+	//get: /imagem/edit/id
+	@Security.Authenticated(Secured.class)
 	public static Result image(Long id) {
 		imageForm.fill(Image.find.ref(id));
-		return ok(views.html.createImage.render(imageForm, Category.all()));
+		return ok(views.html.createImage.render(imageForm, Category.all(), User.findByLogin((request().username()))));
 	}
 	
+	//get: /imagem/detail/id
+	@Security.Authenticated(Secured.class)
 	public static Result imageDetail(Long id) {
-		return ok(views.html.imageDetail.render(Image.find.byId(id)));
+		return ok(views.html.imageDetail.render(Image.find.byId(id), User.findByLogin((request().username()))));
 	}
 	
-    public static Result listImages(int page, String sortBy, String order) {
+	//get: /search
+	@Security.Authenticated(Secured.class)
+    public static Result listImages() {
+		Form<SearchForm> filledForm = searchForm.bindFromRequest();
         return ok(
             views.html.index.render(
-                ChildImage.page(page, 10, sortBy, order, Image.all()),
-                sortBy, order, User.findByLogin((request().username())), Category.all()
+                ChildImage.page(0, 10, "id", "asc", Image.findByTag(filledForm.get().search)),
+                "id", "asc", User.findByLogin((request().username())), Category.all()
             )
         );
     }
     
+    //get: todo
+	@Security.Authenticated(Secured.class)
     public static Result filtros(int filtro, int value) {
         return ok(
             views.html.index.render(
@@ -69,11 +71,13 @@ public class Application extends Controller {
         );
     }
 	
-	// post: /imagens
+	// post: /imagem
+	@Security.Authenticated(Secured.class)
 	public static Result newImage() throws IOException {
 		Form<Image> filledForm = imageForm.bindFromRequest();
 		if (filledForm.hasErrors()) {
-			return badRequest(views.html.createImage.render(filledForm, Category.all()));
+			return badRequest(views.html.createImage.render(filledForm, Category.all(), 
+								User.findByLogin((request().username()))));
 		} else {
 			Image img = filledForm.get();
 			FilePart imgFile = request().body().asMultipartFormData()
@@ -85,10 +89,12 @@ public class Application extends Controller {
 	}
 	
 	// post: /imagens/:id/edit
+	@Security.Authenticated(Secured.class)
 	public static Result editImage() throws IOException {
 		Form<Image> filledForm = imageForm.bindFromRequest();
 		if (filledForm.hasErrors()) {
-			return badRequest(views.html.createImage.render(filledForm, Category.all()));
+			return badRequest(views.html.createImage.render(filledForm, Category.all(),
+					User.findByLogin((request().username()))));
 		} else {
 			Image img = filledForm.get();
 			FilePart imgFile = request().body().asMultipartFormData()
@@ -100,6 +106,7 @@ public class Application extends Controller {
 	}
 
 	// post: /imagens/:id/delete
+	@Security.Authenticated(Secured.class)
 	public static Result deleteImage(Long id) {
 		Image.delete(id);
 		return redirect(routes.Home.index(1,"id", "asc"));
@@ -114,7 +121,6 @@ public class Application extends Controller {
 					.replace("/", ".");
 			String fileName = img.name.concat(String.valueOf(i)).concat(
 					extension);
-			//createThumbnail(ImageIO.read(imgFile.getFile()));
 			File file;
 			if (i == 0){
 				file = new File("C:/play-2.0/ImageDB/public/images/".concat(fileName));
@@ -138,10 +144,27 @@ public class Application extends Controller {
 		img.childImage = child;
 	}
 
+	//post: todo
+	@Security.Authenticated(Secured.class)
 	public static Result newCategory(String name) throws IOException {
 		Category category = new Category(name);
 		Category.create(category);
 		return redirect(routes.Home.index(1,"id", "asc"));
 	}
+
+	public static BufferedImage createThumbnail(BufferedImage img) {
+		img = resize(img, Method.ULTRA_QUALITY, Mode.FIT_TO_WIDTH, 250, 200);
+		return img;
+	}
 	
+	public static BufferedImage createLowResolution(BufferedImage img) {
+		img = resize(img, Method.ULTRA_QUALITY, Mode.FIT_TO_WIDTH, 1500, 1000);
+		return img;
+	}
+	
+	public static class SearchForm {
+		 
+		@Required
+		public String search;
+	}
 }

@@ -1,8 +1,8 @@
-@(imageForm: Form[Image], categories: List[Category])
+@(imageForm: Form[Image], categories: List[Category], user:models.User)
 @import helper._
-@main("Images") {
-    
-    @form(action = routes.Application.newImage(), 'enctype -> "multipart/form-data", 'class -> "well", 'id -> "image") {
+@main("Images", user) {
+    <div class="container-fluid">
+    @form(action = routes.Application.newImage(), 'enctype -> "multipart/form-data", 'class -> "form", 'id -> "image") {
         @if(imageForm.hasGlobalErrors) {
       		<p class="error">
        			@imageForm.globalError.message
@@ -10,7 +10,7 @@
     	}
     	<div id="error"></div>
         <h2 class="well-heading">Nova Imagem</h2>
-        <input class="input-block-level" type="text" placeholder="Nome" id="name" name="name" value="" >
+        <input class="input" type="text" placeholder="Nome" id="name" name="name" value="" >
         <select id="orientation" name="orientation" >  <option value="1"> Horizontal </option> <option value="2"> Vertical </option></select>
         <label class="checkbox">
         	<input type="checkBox" id="isEditorial" name="isEditorial" value="true" >  Editorial
@@ -30,12 +30,13 @@
               	</select>  
             </div>  
         </div> 
-  		<textarea class="input-block-level" placeholder="Termo de uso" rows="5" cols="50" id="useTerm" name="useTerm" value="" > </textarea>
-        <textarea class="input-block-level" rows="2" cols="50" id="tags" name="tags" value="" > </textarea>
-        <input type="text" class="input-block-level" id="valDate" name="valDate" value="" >
-        <input type="file" class="input-block-level" id="picture" name="picture" />       
+  		<textarea class="input" rows="5" cols="50" id="useTerm" name="useTerm" value="" > </textarea>
+        <textarea class="input" rows="2" cols="50" id="tags" name="tags" value="" > </textarea>
+        <input type="text" placeholder="Data de validade" class="input" id="valDate" name="valDate" value="" >
+        <input type="file" class="input" id="picture" name="picture" />       
         <input class="btn" type="submit" value="Create">
     }
+    </div>
     <script type="text/javascript">
 	$('#image').submit(function() {
 		if($("#name").val() == ""){
