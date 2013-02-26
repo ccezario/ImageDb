@@ -6,6 +6,7 @@
 create table category (
   id                        bigint not null,
   name                      varchar(255),
+  is_segment                boolean,
   constraint pk_category primary key (id))
 ;
 
@@ -21,6 +22,7 @@ create table image (
   id                        bigint not null,
   name                      varchar(255),
   orientation               integer,
+  type                      integer,
   is_editorial              boolean,
   is_populated              boolean,
   use_term                  varchar(255),

@@ -147,7 +147,7 @@ public class Application extends Controller {
 	//post: todo
 	@Security.Authenticated(Secured.class)
 	public static Result newCategory(String name) throws IOException {
-		Category category = new Category(name);
+		Category category = new Category(name, false);
 		Category.create(category);
 		return redirect(routes.Home.index(1,"id", "asc"));
 	}

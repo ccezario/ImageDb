@@ -15,10 +15,13 @@ public class Category extends Model {
 	public Long id;
 	@Required
 	public String name;
+    @Required
+    public boolean isSegment;
 
-	public Category(String name) {
+	public Category(String name, boolean isSegment) {
 		super();
 		this.name = name;
+        this.isSegment = isSegment;
 	}
 
 	public static Finder<Long, Category> find = new Finder(Long.class, Category.class);
