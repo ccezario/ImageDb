@@ -28,8 +28,7 @@ public class Global extends GlobalSettings {
         if (Category.find.findRowCount() == 0) {
         	Category.create(new Category("Polinesia", false));
         	Category.create(new Category("Yosemite", false));
-            Category.create(new Category("RH", true));
-            Category.create(new Category("Apresentacao", true));
+        	Category.create(new Category("RH",true));
         }
         if (Image.find.findRowCount() == 0){
         	try {

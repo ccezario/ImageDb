@@ -14,10 +14,12 @@ public class Image extends Model {
 	public Long id;
 	@Required
 	public String name;
-	@Required //1-horizontal, 2-vertical
+	//1 - horizontal 2 - vertical
+	@Required
 	public int orientation;
-    @Required //1-foto, 2-ilustracao, 3- vetor...
-    public int type;
+	//1 - photo 2 - illustration 3 - vector
+	@Required
+	public int type;
 	@Required
 	public Boolean isEditorial;
 	@Required
@@ -32,14 +34,14 @@ public class Image extends Model {
 	public String tag;
 	@ManyToMany(cascade=CascadeType.PERSIST)
 	public List<Category> category;
-	
+    
 	public Image(String name, int orientation, int type, Boolean isEditorial,
 			Boolean isPopulated, String useTerm, Date valDate,
 			List<ChildImage> childImage, String tag, List<Category> category) {
 		super();
 		this.name = name;
 		this.orientation = orientation;
-        this.type = type;
+		this.type = type;
 		this.isEditorial = isEditorial;
 		this.isPopulated = isPopulated;
 		this.useTerm = useTerm;

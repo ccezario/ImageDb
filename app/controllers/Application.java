@@ -14,6 +14,7 @@ import models.Image;
 import models.Category;
 import models.ChildImage;
 import models.User;
+import play.api.libs.Crypto;
 import play.data.Form;
 import play.data.validation.Constraints.Required;
 import play.mvc.Controller;
@@ -119,14 +120,14 @@ public class Application extends Controller {
 			String extension = imgFile.getContentType()
 					.substring(imgFile.getContentType().lastIndexOf("/"))
 					.replace("/", ".");
-			String fileName = img.name.concat(String.valueOf(i)).concat(
+			String fileName = Crypto.sign(img.name).concat(String.valueOf(i)).concat(
 					extension);
 			File file;
 			if (i == 0){
 				file = new File("C:/play-2.0/ImageDB/public/images/".concat(fileName));
 				ImageIO.write(createThumbnail(ImageIO.read(imgFile.getFile())),
 						extension.replace(".", ""), file);
-				child.add(new ChildImage("small", "images/".concat(file.getName())));
+				child.add(new ChildImage("thumb", "images/".concat(file.getName())));
 			}
 			if (i == 1){
 				file = new File("C:/play-2.0/ImageDB/public/images/".concat(fileName));
