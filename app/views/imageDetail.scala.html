@@ -12,7 +12,8 @@
     		<a href=@routes.Assets.at(childImage.link)>Link</a>
     	}
     	<p> Nome: @image.name </p>
-        <p> Orienta&#231;&#227;o: @if(image.orientation==1){horizontal}else{vertical} </p>
+        <p> Orienta&#231;&#227;o: @image.orientation.name </p>
+        <p> Tipo: @image.imageType.toString() </p>
         <p> <input type="checkBox" id="isEditorial" name="isEditorial" checked=@image.isEditorial disabled>  Editorial </input> </p>
         <p> <input type="checkBox" id="isPopulated" name="isPopulated" checked=@image.isPopulated disabled>  Pessoas </input> </p>
         <p> Categorias: 

@@ -3,16 +3,24 @@ package controllers;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.codehaus.jackson.format.DataFormatMatcher;
 import org.imgscalr.Scalr.Mode;
+
+import controllers.Account.UserForm;
 
 import models.Image;
 import models.Category;
 import models.ChildImage;
+import models.Segment;
 import models.User;
 import play.api.libs.Crypto;
 import play.data.Form;
@@ -33,14 +41,14 @@ public class Application extends Controller {
 	//get: /imagem
 	@Security.Authenticated(Secured.class)
 	public static Result index() {
-		return ok(views.html.createImage.render(imageForm, Category.all(), User.findByLogin((request().username()))));
+		return ok(views.html.createImage.render(imageForm, Category.all(), Segment.all(), User.findByLogin((request().username()))));
 	}
 	
 	//get: /imagem/edit/id
 	@Security.Authenticated(Secured.class)
 	public static Result image(Long id) {
-		imageForm.fill(Image.find.ref(id));
-		return ok(views.html.createImage.render(imageForm, Category.all(), User.findByLogin((request().username()))));
+		imageForm = form(Image.class).fill(Image.find.ref(id));
+		return ok(views.html.editImage.render(imageForm, Category.all(), Segment.all(), User.findByLogin((request().username()))));
 	}
 	
 	//get: /imagem/detail/id
@@ -55,7 +63,7 @@ public class Application extends Controller {
 		Form<SearchForm> filledForm = searchForm.bindFromRequest();
         return ok(
             views.html.index.render(
-                ChildImage.page(0, 10, "id", "asc", Image.findByTag(filledForm.get().search)),
+                ChildImage.page(0, 10, "id", "asc", Image.findBySearch(filledForm.get().search)),
                 "id", "asc", User.findByLogin((request().username())), Category.all()
             )
         );
@@ -77,7 +85,7 @@ public class Application extends Controller {
 	public static Result newImage() throws IOException {
 		Form<Image> filledForm = imageForm.bindFromRequest();
 		if (filledForm.hasErrors()) {
-			return badRequest(views.html.createImage.render(filledForm, Category.all(), 
+			return badRequest(views.html.createImage.render(filledForm, Category.all(), Segment.all(),
 								User.findByLogin((request().username()))));
 		} else {
 			Image img = filledForm.get();
@@ -89,20 +97,17 @@ public class Application extends Controller {
 		}
 	}
 	
-	// post: /imagens/:id/edit
+	// post: /imagens/edit/:id
 	@Security.Authenticated(Secured.class)
 	public static Result editImage() throws IOException {
 		Form<Image> filledForm = imageForm.bindFromRequest();
 		if (filledForm.hasErrors()) {
-			return badRequest(views.html.createImage.render(filledForm, Category.all(),
+			return badRequest(views.html.editImage.render(filledForm, Category.all(), Segment.all(),
 					User.findByLogin((request().username()))));
 		} else {
 			Image img = filledForm.get();
-			FilePart imgFile = request().body().asMultipartFormData()
-					.getFile("picture");
-			saveImages(img, imgFile);
 			Image.update(img);
-			return redirect(routes.Home.index(1,"id", "asc"));
+			return redirect(routes.Home.index(0,"id", "asc"));
 		}
 	}
 
@@ -148,7 +153,7 @@ public class Application extends Controller {
 	//post: todo
 	@Security.Authenticated(Secured.class)
 	public static Result newCategory(String name) throws IOException {
-		Category category = new Category(name, false);
+		Category category = new Category(name);
 		Category.create(category);
 		return redirect(routes.Home.index(1,"id", "asc"));
 	}
@@ -164,7 +169,6 @@ public class Application extends Controller {
 	}
 	
 	public static class SearchForm {
-		 
 		@Required
 		public String search;
 	}

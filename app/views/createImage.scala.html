@@ -1,4 +1,4 @@
-@(imageForm: Form[Image], categories: List[Category], user:models.User)
+@(imageForm: Form[Image], categories: List[Category], segments: List[Segment], user:models.User)
 @import helper._
 @main("Images", user) {
     <div class="container-fluid">
@@ -31,14 +31,30 @@
               	</select>  
             </div>  
         </div> 
-  		<textarea class="input" rows="5" cols="50" id="useTerm" name="useTerm" value="" > </textarea>
-        <textarea class="input" rows="2" cols="50" id="tags" name="tags" value="" > </textarea>
-        <input type="text" placeholder="Data de validade" class="input" id="valDate" name="valDate" value="" >
+        <div class="control-group">  
+            <label class="control-label" for="multiSelect">Segmentos</label>  
+            <div class="controls">  
+            	<select multiple="multiple" id="multiSelect" name="segment">  
+        			@for(seg <- segments){
+      					<option value = @seg.id>
+        					@seg.name
+      					</option>
+  					}
+              	</select>  
+            </div>  
+        </div> 
+        <textarea class="input" rows="5" cols="50" id="useTerm" name="useTerm" value="" > </textarea>
+        <textarea class="input" rows="2" cols="50" id="tags" name="tag" value="" > </textarea>
+        <div class="input-append date" id="dp3" data-date="12/02/2013" data-date-format="dd/mm/yyyy">
+    		<input class="span2" size="16" type="text" value="12/02/2013">
+    		<span class="add-on"><i class="icon-th"></i></span>
+    	</div>
         <input type="file" class="input" id="picture" name="picture" />       
         <input class="btn" type="submit" value="Create">
     }
     </div>
     <script type="text/javascript">
+    $('#dp3').datepicker().show();
 	$('#image').submit(function() {
 		if($("#name").val() == ""){
             var output="";
@@ -57,12 +73,17 @@
 		}
 		if($("#valDate").val() == ""){ 
             var output="";
-        	output += "<li>"+"escolher pelo menos uma categoria"+"</li>";
+        	output += "<li>"+"escolha a data de validade da imagem"+"</li>";
+			return $("#error").append($(output));
+		}
+		if($("#valDate").val().length < 10){
+            var output="";
+        	output += "<li>"+"digite uma data no formato dd/mm/aaaa"+"</li>";
 			return $("#error").append($(output));
 		}
 		if($("#picture").val() == ""){ 
             var output="";
-        	output += "<li>"+"escolher pelo menos uma categoria"+"</li>";
+        	output += "<li>"+"escolher uma imagem"+"</li>";
 			return $("#error").append($(output));
 		}
 	});

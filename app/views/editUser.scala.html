@@ -1,0 +1,54 @@
+@(userForm: Form[Account.UserForm], user: models.User)
+@import helper._
+@main("Editar Usuário", user) {
+    
+    <div class="container-fluid"> 
+    	@form(action = routes.Account.editUser(), 'class -> "form", 'id -> "edit") {
+   	   		<div class="alert alert-block alert-error" id="error" @if(!userForm.hasGlobalErrors) {hidden}> 
+				<a class="close" data-dismiss="alert" id="closeError" href="">X</a>
+				<h4 class="alert-heading">Erro!</h4> 
+				<div id="textoErro"> 
+					@if(userForm.hasGlobalErrors) {
+						@userForm.globalError.message
+					}
+				</div> 
+			</div>
+            @inputText(userForm("login"), '_label -> "Login", 'class -> "span3", 'id -> "login", 'readonly -> "readonly")
+            @inputText(userForm("email"), '_label -> "E-mail", 'class -> "span3", 'id -> "email")
+            <dl id="role_field" class=" ">
+				<dt>
+					<label for="role">Perfil</label>
+				</dt>
+				<dd>
+					<select id="role" name="role" class="span3">  
+            			<option value="Administrador" @if(userForm.get().role.name.contains("Administrador")){selected}> Administrador </option>
+        				<option value="Usuario" @if(userForm.get().role.name.contains("Usuario")){selected}> Usuário </option>
+        				<option value="RH" @if(userForm.get().role.name.contains("RH")){selected}> RH </option>
+        			</select>
+        		</dd>
+			</dl>
+			<a href="@{routes.Account.users()}">
+            	<input class="btn" type="button" value="Voltar">
+            </a>
+        	<input class="btn btn-primary" type="submit" value="Ok">
+    	}
+    </div>
+        <script type="text/javascript">
+		$('#user').submit(function() {
+			if($("#login").val() == ""){
+				$("#textoErro").empty();
+				$("#error").attr("hidden",false);
+				$("#textoErro").append("Digite um login");
+				return false;
+			}
+			if($("#email").val() == ""){
+				$("#error").attr("hidden",false);
+				$("#textoErro").append("E-mail Inválido");
+				return false;
+			}
+		});
+		$("#closeError").live("click", function(){
+			$("#error").attr("hidden",true);
+		});
+	</script>
+}

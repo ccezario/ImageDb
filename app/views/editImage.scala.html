@@ -1,14 +1,45 @@
-@(imageForm: Form[Image], categories: List[Category], user: models.User)
+@(imageForm: Form[Image], categories: List[Category], segments: List[Segment], user: models.User)
 @import helper._
 @main("Images", user) {
     
-    <h2>Add a new imagem</h2>
-    
-    @form(action = routes.Application.editImage(), 'enctype -> "multipart/form-data") {
-        <p> Nome: <input type="text" id="name" name="name" value="" > </p>
-        <p> Orientação: <select id="orientation" name="orientation" >  <option value="1"> Horizontal </option> <option value="2"> Vertical </option></select> </p>
-        <p> <input type="checkBox" id="isEditorial" name="isEditorial" value="true" >  Editorial </input> </p>
-        <p> <input type="checkBox" id="isPopulated" name="isPopulated" value="true" >  Pessoas </input> </p>
+<div class="container-fluid">    
+    @form(action = routes.Application.editImage(), 'enctype -> "multipart/form-data", 'id -> "image") {
+    		<div class="alert alert-block alert-error" id="error" @if(!imageForm.hasGlobalErrors) {hidden}> 
+				<a class="close" data-dismiss="alert" id="closeError" href="">X</a>
+				<h4 class="alert-heading">Erro!</h4> 
+				<div id="erro"> 
+					@if(imageForm.hasGlobalErrors) {
+						@imageForm.globalError.message
+					}
+				</div> 
+			</div>
+    	<input type="hidden" name="id" value=@imageForm.get().id>
+    	@inputText(imageForm("name"), '_label -> "Nome", 'class -> "span3", 'id -> "name")
+    	<dl id="orientation_field" class=" ">
+			<dt>
+				<label for="orientation">Orientação</label>
+			</dt>
+			<dd>
+				<select id="orientation" name="orientation" class="span3">  
+           			<option value="Horizontal" @if(imageForm.get().orientation.name.contains("Horizontal")){selected}> Horizontal </option>
+        			<option value="Vertical" @if(imageForm.get().orientation.name.contains("Vertical")){selected}> Vertical </option>
+        		</select>
+        	</dd>
+		</dl>
+		<dl id="imageType_field" class=" ">
+			<dt>
+				<label for="imageType">Tipo</label>
+			</dt>
+			<dd>
+				<select id="imageType" name="imageType" class="span3">  
+           			<option value="Photo" @if(imageForm.get().imageType.name.contains("Photo")){selected}> Foto </option>
+        			<option value="Illustration" @if(imageForm.get().imageType.name.contains("Illustration")){selected}> Ilustração </option>
+        			<option value="Vector" @if(imageForm.get().imageType.name.contains("Vector")){selected}> Vetor </option>
+        		</select>
+        	</dd>
+		</dl>
+        <p> <input type="checkBox" id="isEditorial" name="isEditorial" value=@imageForm.get().isEditorial >  Editorial </input> </p>
+        <p> <input type="checkBox" id="isPopulated" name="isPopulated" value=@imageForm.get().isPopulated >  Pessoas </input> </p>
         <p> Categorias: <select id="category" name="category" >
           		@for(cat <- categories){
       				<option value = @cat.id>
@@ -16,10 +47,106 @@
       				</option>
   				} </select>
   		</p>
-        <p> Termo de Uso: </p> <p> <textarea rows="5" cols="50" id="useTerm" name="useTerm" value="" > </textarea> </p>
-        <p> Tags: </p> <p> <textarea rows="2" cols="50" id="tags" name="tags" value="" > </textarea> </p>
-        <p> Data de Validade: <input type="text" id="valDate" name="valDate" value="" > </p>
-        <p> Arquivo: <input type="file" name="picture" />       
+  		<p> Segmentos: <select id="segment" name="segment" >
+          		@for(seg <- segments){
+      				<option value = @seg.id>
+        				@seg.name
+      				</option>
+  				} </select>
+  		</p>
+  		@textarea(field = imageForm("useTerm"), '_label -> "Termo de Uso", 'class -> "span3", 'rows -> 5, 'cols -> 50)
+        @inputText(imageForm("tag"), '_label -> "Tags", 'class -> "span3", 'id -> "tag")
+        <div class="input-append date" id="dp3" data-date=@imageForm.get().valDate data-date-format="dd/mm/yyyy">
+        	<p>Data de Validade:</p>
+    		<input class="span3" size="16" type="text" name="valDate" id="valDate" value=@imageForm.get().valDate.format("dd/MM/yyyy")>
+    		<span class="add-on"><i class="icon-th"></i></span>
+    	</div>     
        <p> <input type="submit" value="edit"> </p>
     }
+</div>
+<script type="text/javascript">
+    $('#dp3').datepicker().show();
+	$('#image').submit(function() {
+		if($("#name").val() == ""){
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("Digite o nome da imagem");
+			return false;
+		}
+		if($("#orientation").val() == null){ 
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("Escolha a orientação da imagem");
+			return false;
+		}
+		if($("#imageType").val() == null){ 
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("Escolha o tipo de imagem");
+			return false;
+		}
+		if($("#category").val() == null){ 
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("Escolha pelo menos uma categoria para a imagem");
+			return false;
+		}
+		if($("#segment").val() == null){ 
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("Escolha pelo menos um segmento para a imagem");
+			return false;
+		}
+		if($("#useTerm").val() == ""){ 
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("Digite o termo de uso da imagem");
+        	return false;
+		}
+		if($("#valDate").val() == ""){ 
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("Digite a data de validade da imagem");
+        	return false;
+		}
+		if(validaDat($("#valDate").val()) == false){
+			$("#erro").empty();
+			$("#error").attr("hidden",false);
+			$("#erro").append("digite a data de validade no formato DD/MM/AAAA");
+        	return false;
+		}
+	});
+	function validaDat(valor) {
+		var date=valor;
+		curDate=new Date();
+		day=curDate.getDate();
+		month=curDate.getMonth();
+		year=curDate.getFullYear();
+		var ardt=new Array;
+		var ExpReg=new RegExp("(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[12][0-9]{3}");
+		ardt=date.split("/");
+		erro=false;
+		if (date.search(ExpReg)==-1){
+			erro = true;
+		}
+		else if (ardt[3]<=parseInt(year)){
+			if (ardt[2])<=parseInt(month)){
+				if (ardt[1]<=parseInt(day))
+					erro = true;
+			}
+		}
+		else if (((ardt[1]==4)||(ardt[1]==6)||(ardt[1]==9)||(ardt[1]==11))&&(ardt[0]>30))
+			erro = true;
+		else if ( ardt[1]==2) {
+			if ((ardt[0]>28)&&((ardt[2]%4)!=0))
+				erro = true;
+			if ((ardt[0]>29)&&((ardt[2]%4)==0))
+				erro = true;
+		}
+		if (erro) {
+			return false;
+		}
+		return true;
+	}
+</script>
 }

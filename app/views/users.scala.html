@@ -1,4 +1,4 @@
-@(message: String, taskForm: Form[Account.UserForm], user: models.User)
+@(user: models.User)
 @import helper._
 @main("Usuários", user) {
 
@@ -8,7 +8,7 @@
 				<div class="btn-toolbar">
 					<a href=@{routes.Account.createUser()}><button class="btn btn-primary" >Cadastrar usu&#225;rio</button></a>
 				</div>
-    	 		<table class="table table-striped"> 
+    	 		<table class="table table-striped" id="pagination"> 
      				<thead> 
      					<tr> 
      						<th>Login</th> 
@@ -16,44 +16,71 @@
      						<th>Perfil</th>
      						<th>Ativo</th>
      						<th>Aprovado</th> 
+     						<th></th>
      					</tr> 
      				</thead> 
-     				<tbody id="users"></tbody>
+     				<tbody>
+     					<tr>
+     				    	<td>Row 1 Data 1</td>
+      						<td>Row 1 Data 2</td>
+      						<td>etc</td>
+     					</tr>
+     				</tbody>
      			</table> 
+     			<div id="pagina"></div>
      		</div>
   		</div>
 	</div>
  	<script type="text/javascript">
-		$(function() {
-		  	return $.get("/usuarios", function(data) {
-		    	return $.each(data, function(index, users) {
-		            var output="";
-		            output += "<tr><td>" + users.login + "</td><td>" + 
-		            users.email + "</td><td>" + users.role + "</td><td><input type=checkbox id=isActive"+ 
-		            users.login+" value="+users.login+" onclick=active(value) checked="+users.isActive+
-		            "> </td><td>"+"<input type=checkbox id=isApproved"+users.login+" value="+users.login+
-		            " onclick=approve(value) checked="+users.isApproved+" disabled="+users.isApproved+"> </td>"+ 
-		            "<td><a href=usuario/edit/"+users.login+"><i class=icon-pencil></i></a>"+
-		            "<a href=usuario/"+users.login+"/delete role=button data-toggle=modal><i class=icon-remove></i></a></td></tr>";
-		            return $("#users").append($(output));
 
-		    	});
-		  	});
-		});
+ 	$(document).ready(function(){
+ 		$('#pagination').dataTable({
+ 			"bProcessing": true,
+ 		    "bServerSide": true,
+ 		    "sAjaxSource": "@routes.Account.userList()"
+ 		});
+ 	});
 	</script>
 	<script type="text/javascript">
 		var active = function(value) {
-	    	if (!confirm("Confirma ativação?")){
-	        	$(getElementById("isActive"+value)).attr("checked",false);
-	    	} else {
-		        $(getElementById("isActive"+value)).attr("checked",true);
-		    }
+			var aChk = document.getElementsByName("isActive"+value);
+			if($(document.getElementsByName("isActive"+value)).is(':checked')){
+		    	if (!confirm("Confirma ativa&ccedil;&atilde;o?")){
+		        	$(document.getElementById("isActive"+value)).attr("checked",false);
+		    	} else {
+			        $(document.getElementById("isActive"+value)).attr("checked",true);
+		        	$.getJSON('/usuario/activate/'+value, function(data){
+		                if(data == "sucess")
+			                alert("Usu&aacute;rio "+value+" ativado com sucesso!");
+		                else
+			                alert("Voc&ecirc; n&atilde;o tem autoriza&ccedil;&atilde;o para executar essa a&ccedil;&atilde;o");
+		                });
+			    }
+			}else{
+		    	if (!confirm("Confirma desativa&ccedil;&atilde;o?")){
+		        	$(document.getElementById("isActive"+value)).attr("checked",true);
+		    	} else {
+			        $(document.getElementById("isActive"+value)).attr("checked",false);
+		        	$.getJSON('/usuario/deactivate/'+value, function(data){
+		                if(data == "sucess")
+			                alert("Usu&aacute;rio "+value+" desativado com sucesso!");
+		                else
+			                alert("Voc&ecirc; n&atilde;o tem autoriza&ccedil;&atilde;o para executar essa a&ccedil;&atilde;o");
+		            });
+		    	}
+			}
 		};
 		var approve = function(value) {
-	    	if (confirm("Confirma Aprovação?")){
+	    	if (confirm("Confirma Aprova&ccedil;&atilde;o?")){
 	        	$(document.getElementById("isApproved"+value)).attr("checked",true);
 	        	$(document.getElementById("isApproved"+value)).attr("disabled",true);
 	        	$(document.getElementById("isActive"+value)).attr("disabled",false);
+	        	$.getJSON('/usuario/approve/'+value, function(data){
+	                if(data == "sucess")
+		                alert("Usu&aacute;rio "+value+" aprovado com sucesso!");
+	                else
+		                alert("Voc&ecirc; n&atilde;o tem autoriza&ccedil;&atilde;o para executar essa a&ccedil;&atilde;o");
+	                });
 	    	} else {
 	        	$(document.getElementById("isApproved"+value)).attr("checked",false);
 	    	}

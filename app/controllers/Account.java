@@ -1,6 +1,15 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+
+import com.avaje.ebean.Expr;
+import com.avaje.ebean.Page;
 
 import javax.swing.Box.Filler;
 import javax.validation.Constraint;
@@ -9,10 +18,12 @@ import auth.Secured;
 
 import models.ChildImage;
 import models.Image;
+import models.Role;
 import models.User;
 import play.api.libs.Crypto;
 import play.data.Form;
 import play.data.validation.Constraints.Required;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Security;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -42,21 +53,99 @@ public class Account extends Controller {
 	//get: /user/edit
 	@Security.Authenticated(Secured.class)
 	public static Result edit(String login) {
-		UserForm user = new UserForm(User.findByLogin(login));
-		userForm.fill(user);
-		return ok(views.html.user.render(userForm, User.findByLogin((request().username()))));
+		userForm = form(UserForm.class).fill(new UserForm(User.findByLogin(login)));
+		return ok(views.html.editUser.render(userForm, User.findByLogin((request().username()))));
 	}
 	
 	//get: /users
 	@Security.Authenticated(Secured.class)
 	public static Result users() {
-		return ok(views.html.users.render("", userForm, User.findByLogin((request().username()))));
+		return ok(views.html.users.render(User.findByLogin((request().username()))));
+	}
+	
+	//get: /user/approve
+	@Security.Authenticated(Secured.class)
+	public static Result userApprove(String login) {
+		User user = User.findByLogin(login);
+		User userLoggedIn = User.findByLogin(request().username());
+		if (userLoggedIn.role==Role.Administrador){
+			user.isApproved=true;
+			User.update(user);
+			return ok(toJson("sucess"));
+		}
+		return ok(toJson("authetication"));
+	}
+	
+	//get: /user/activate
+	@Security.Authenticated(Secured.class)
+	public static Result userActivate(String login) {
+		User user = User.findByLogin(login);
+		User userLoggedIn = User.findByLogin(request().username());
+		if (userLoggedIn.role==Role.Administrador){
+			user.isActive=true;
+			User.update(user);
+			return ok(toJson("sucess"));
+		}
+		return ok(toJson("authentication"));
+	}
+	
+	//get: /user/deactivate
+	@Security.Authenticated(Secured.class)
+	public static Result userDeactivate(String login) {
+		User user = User.findByLogin(login);
+		User userLoggedIn = User.findByLogin(request().username());
+		if (userLoggedIn.role==Role.Administrador){
+			user.isActive=false;
+			User.update(user);
+			return ok(toJson("sucess"));
+		}
+		return ok(toJson("authentication"));
 	}
 	
 	//get: /usuarios
 	@Security.Authenticated(Secured.class)
 	public static Result userList() {
-		return ok(toJson(User.all()));
+		Map<String, String[]> params = request().queryString();
+	    Integer iTotalRecords = User.find.findRowCount();
+	    String filter = params.get("sSearch")[0];
+	    Integer pageSize = Integer.valueOf(params.get("iDisplayLength")[0]);
+	    Integer page = Integer.valueOf(params.get("iDisplayStart")[0]) / pageSize;
+		String sortBy = "login";
+	    String order = params.get("sSortDir_0")[0];
+	    
+	    Page<User> usersPage = User.listUsers(page, pageSize, sortBy, order, filter);
+	 
+	    Integer iTotalDisplayRecords = usersPage.getTotalRowCount();
+	    ObjectNode result = Json.newObject();
+	 
+	    result.put("sEcho", Integer.valueOf(params.get("sEcho")[0]));
+	    result.put("iTotalRecords", iTotalRecords);
+	    result.put("iTotalDisplayRecords", iTotalDisplayRecords);
+	 
+	    ArrayNode an = result.putArray("aaData");
+	 
+	    for(User u : usersPage.getList()) {
+	      ObjectNode row = Json.newObject();
+	      row.put("0", u.login);
+	      row.put("1", u.email);
+	      row.put("2", u.role.name());
+	      if(u.isActive)
+	    	  row.put("3", "<input type=checkbox id=isActive"+u.login+" value="+u.login+
+	    			  " onclick=active(value) checked >");
+	      else
+		      row.put("3", "<input type=checkbox id=isActive"+u.login+" value="+u.login+
+		    		  " onclick=active(value) >");
+	      if(u.isApproved)
+	    	  row.put("4", "<input type=checkbox id=isApproved"+u.login+" value="+u.login+
+	    			  " onclick=approve(value) checked disabled>");
+	      else
+		      row.put("4", "<input type=checkbox id=isApproved"+u.login+" value="+u.login+
+		    		  " onclick=approve(value) >");
+	      row.put("5", "<a href=usuario/edit/"+u.login+"><i class=icon-pencil></i></a><a href=usuario/"+
+	    		  		u.login+"/delete role=button data-toggle=modal><i class=icon-remove></i></a>");
+	      an.add(row);
+	    }
+		return ok(result);
 	}
 	
 	//get: /usuario/login/delete
@@ -107,10 +196,10 @@ public class Account extends Controller {
 	public static Result editUser() throws IOException {
 		Form<UserForm> filledForm = userForm.bindFromRequest();
 		if (filledForm.hasErrors())
-			return badRequest(views.html.user.render(filledForm, User.findByLogin((request().username()))));
-		User user = new User(filledForm.get().login, filledForm.get().password, filledForm.get().email, false, false, 1);
+			return badRequest(views.html.editUser.render(filledForm, User.findByLogin((request().username()))));
+		User user = new User(filledForm.get().login, filledForm.get().password, filledForm.get().email, false, false, filledForm.get().role);
 		User.update(user);
-		return redirect(routes.Account.userList());
+		return redirect(routes.Account.users());
 	}
 	
 	public static class LoginForm {
@@ -128,18 +217,13 @@ public class Account extends Controller {
 	
 	public static class UserForm {
 		 
-		@Required
 		public String login;
-		@Required
 		public String password;
-		@Required
 		public String confirm;
-		@Required
 		public String email;
 		public Boolean isActive;
 		public Boolean isApproved;
-		@Required
-		public int role;
+		public Role role;
 		
 		public UserForm(){
 		}
@@ -157,17 +241,20 @@ public class Account extends Controller {
             if (isBlank(login)) {
                 return "Digite o login";
             }
-            if (isBlank(password)) {
-                return "Digite a senha";
-            }
-            if (isBlank(confirm)) {
-                return "Digite a confirmacao da senha";
-            }
             if (isBlank(email)) {
                 return "Digite o e-mail";
             }
-            if (role < 1 || role > 3) {
+            if (!role.name().matches("RH") && !role.name().matches("Usuario") && !role.name().matches("Administrador")) {
                 return "escolha o perfil do usuario";
+            }
+    		if (request().path().contains("edit")){
+    			return null;
+    		}
+            if (isBlank(password)) {
+       			return "Digite a senha";
+            }
+            if (isBlank(confirm)) {
+                return "Digite a confirmacao da senha";
             }
             if (!password.matches(confirm)){
             	return "senha diferente da confirmacao";
@@ -182,5 +269,5 @@ public class Account extends Controller {
         private boolean isBlank(String input) {
             return input == null || input.isEmpty() || input.trim().isEmpty();
         }
-	}
+	}    
 }

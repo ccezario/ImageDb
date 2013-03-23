@@ -3,8 +3,13 @@ package models;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
+
+import com.avaje.ebean.Expr;
+import com.avaje.ebean.Page;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -18,9 +23,10 @@ public class User extends Model {
 	public String email;
 	public Boolean isActive;
 	public Boolean isApproved;
-	public int role;
+	@Enumerated(EnumType.ORDINAL)
+	public Role role;
 
-	public User(String login, String password, String email, Boolean isActive, Boolean isApproved, int role) {
+	public User(String login, String password, String email, Boolean isActive, Boolean isApproved, Role role) {
 		super();
 		this.login = login;
 		this.password = password;
@@ -54,5 +60,15 @@ public class User extends Model {
 	
 	public static User authenticate(String login, String password) {
 		return find.where().eq("login", login).eq("password", password).findUnique();
+	}
+	
+	public static Page<User> listUsers(int page, int pageSize, String sortBy,
+			String order, String filter) {
+		return find.where(
+	    		Expr.ilike("login", "%"+filter+"%")
+	    )
+	    .orderBy(sortBy + " " + order)
+	    .findPagingList(pageSize).setFetchAhead(false)
+	    .getPage(page);
 	}
 }

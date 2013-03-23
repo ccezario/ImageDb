@@ -21,24 +21,41 @@ public class Global extends GlobalSettings {
     public void onStart(Application app){
         // Check if the database is empty
         if (User.find.findRowCount() == 0) {
-            User.create(new User("1",Crypto.sign("1"),"1@1.com",true,true,1));
-            User.create(new User("2",Crypto.sign("2"),"2@2.com",true,true,2));
-            User.create(new User("3",Crypto.sign("3"),"3@3.com",true,true,3));
+            User.create(new User("1",Crypto.sign("1"),"1@1.com",true,true,Role.Administrador));
+            User.create(new User("2",Crypto.sign("2"),"2@2.com",true,true,Role.Administrador));
+            User.create(new User("3",Crypto.sign("3"),"3@3.com",true,true,Role.Administrador));
+            User.create(new User("4",Crypto.sign("4"),"4@3.com",true,true,Role.Administrador));
+            User.create(new User("5",Crypto.sign("5"),"5@3.com",true,true,Role.Administrador));
+            User.create(new User("6",Crypto.sign("6"),"6@3.com",true,true,Role.Administrador));
+            User.create(new User("7",Crypto.sign("7"),"7@3.com",true,true,Role.Administrador));
+            User.create(new User("8",Crypto.sign("8"),"8@3.com",true,true,Role.Administrador));
+            User.create(new User("9",Crypto.sign("9"),"9@3.com",true,true,Role.Administrador));
+            User.create(new User("10",Crypto.sign("10"),"0@3.com",false,false,Role.Administrador));
+            User.create(new User("11",Crypto.sign("11"),"1@1.com",false,false,Role.Administrador));
+            User.create(new User("12",Crypto.sign("12"),"1@2.com",false,false,Role.Administrador));
+            User.create(new User("13",Crypto.sign("13"),"1@3.com",false,false,Role.Administrador));
+            User.create(new User("14",Crypto.sign("14"),"1@4.com",false,false,Role.Administrador));
+            User.create(new User("15",Crypto.sign("15"),"1@5.com",false,false,Role.Administrador));
         }
         if (Category.find.findRowCount() == 0) {
-        	Category.create(new Category("Polinesia", false));
-        	Category.create(new Category("Yosemite", false));
-        	Category.create(new Category("RH",true));
+        	Category.create(new Category("Polinesia"));
+        	Category.create(new Category("Yosemite"));
+        	Category.create(new Category("RH"));
+        }
+        if (Segment.find.findRowCount() == 0) {
+        	Segment.create(new Segment("Comercial"));
+        	Segment.create(new Segment("Classica"));
+        	Segment.create(new Segment("RH"));
         }
         if (Image.find.findRowCount() == 0){
         	try {
         		File file = new File("C:/play-2.0/ImageDB/public/images/DSC_0261.jpg");
         		File fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0261_thumb.jpg");
-        		ImageIO.write(createThumbnail(ImageIO.read(file)),
-						"jpeg", fOutput);
+        		//ImageIO.write(createThumbnail(ImageIO.read(file)),
+				//		"jpeg", fOutput);
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0261_low.jpg");
-        		ImageIO.write(createLowResolution(ImageIO.read(file)),
-						"jpeg", fOutput);
+        		//ImageIO.write(createLowResolution(ImageIO.read(file)),
+				//		"jpeg", fOutput);
         		List<ChildImage> ciList = new ArrayList<ChildImage>();
         		ChildImage ci = new ChildImage("thumb", "images/DSC_0261_thumb.jpg");
         		ciList.add(ci);
@@ -48,16 +65,20 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		List<Category> ctList = new ArrayList<Category>();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0261", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		ctList.add(Category.findByName("Polinesia"));
+        		List<Segment> segList = new ArrayList<Segment>();
+        		segList.add(Segment.findByName("Classica"));
+        		segList.add(Segment.findByName("RH"));
+        		Image.create(new Image("DCS_0261", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         	// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0268.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0268_thumb.jpg");
-        		ImageIO.write(createThumbnail(ImageIO.read(file)),
-						"jpeg", fOutput);
+        		//ImageIO.write(createThumbnail(ImageIO.read(file)),
+				//		"jpeg", fOutput);
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0268_low.jpg");
-        		ImageIO.write(createLowResolution(ImageIO.read(file)),
-						"jpeg", fOutput);
+        		//ImageIO.write(createLowResolution(ImageIO.read(file)),
+				//		"jpeg", fOutput);
         		ciList.clear();
         		ci = new ChildImage("thumb", "images/DSC_0268_thumb.jpg");
         		ciList.add(ci);
@@ -67,16 +88,16 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0268", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0268", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0328.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0328_thumb.jpg");
-        		ImageIO.write(createThumbnail(ImageIO.read(file)),
-						"jpeg", fOutput);
+        		//ImageIO.write(createThumbnail(ImageIO.read(file)),
+				//		"jpeg", fOutput);
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0328_low.jpg");
-        		ImageIO.write(createLowResolution(ImageIO.read(file)),
-						"jpeg", fOutput);
+        		//ImageIO.write(createLowResolution(ImageIO.read(file)),
+				//		"jpeg", fOutput);
         		ciList.clear();
         		ci = new ChildImage("thumb", "images/DSC_0328_thumb.jpg");
         		ciList.add(ci);
@@ -86,16 +107,16 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0328", 2, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0328", Orientation.Vertical, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0331.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0331_thumb.jpg");
-        		ImageIO.write(createThumbnail(ImageIO.read(file)),
-						"jpeg", fOutput);
+        		//ImageIO.write(createThumbnail(ImageIO.read(file)),
+				//		"jpeg", fOutput);
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0331_low.jpg");
-        		ImageIO.write(createLowResolution(ImageIO.read(file)),
-						"jpeg", fOutput);
+        		//ImageIO.write(createLowResolution(ImageIO.read(file)),
+				//		"jpeg", fOutput);
         		ciList.clear();
         		ci = new ChildImage("thumb", "images/DSC_0331_thumb.jpg");
         		ciList.add(ci);
@@ -105,8 +126,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0331", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0331", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0348.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0348_thumb.jpg");
@@ -124,8 +145,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0348", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0348", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0371.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0371_thumb.jpg");
@@ -143,8 +164,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Polinesia"));
-        		Image.create(new Image("DCS_0371", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0371", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0382.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0382_thumb.jpg");
@@ -162,8 +183,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Polinesia"));
-        		Image.create(new Image("DCS_0382", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0382", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0398.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0398_thumb.jpg");
@@ -181,8 +202,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Polinesia"));
-        		Image.create(new Image("DCS_0398", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0398", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0470.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0470_thumb.jpg");
@@ -200,8 +221,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0470", 2, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0470", Orientation.Vertical, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0507.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0507_thumb.jpg");
@@ -219,8 +240,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0507", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0507", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0529.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0529_thumb.jpg");
@@ -238,8 +259,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0529", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0529", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0569.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0569_thumb.jpg");
@@ -257,8 +278,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Polinesia"));
-        		Image.create(new Image("DCS_0569", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0569", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0580.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0580_thumb.jpg");
@@ -276,8 +297,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Polinesia"));
-        		Image.create(new Image("DCS_0580", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0580", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0606.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0606_thumb.jpg");
@@ -295,8 +316,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Polinesia"));
-        		Image.create(new Image("DCS_0606", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0606", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0609.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0609_thumb.jpg");
@@ -314,8 +335,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0609", 2, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0609", Orientation.Vertical, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0710.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0710_thumb.jpg");
@@ -333,8 +354,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0710", 2, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0710", Orientation.Vertical, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0738.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0738_thumb.jpg");
@@ -352,8 +373,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0738", 2, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0738", Orientation.Vertical, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0744.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0744_thumb.jpg");
@@ -371,8 +392,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0744", 2, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0744", Orientation.Vertical, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0745.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0745_thumb.jpg");
@@ -390,8 +411,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0745", 2, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0745", Orientation.Vertical, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0753.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0753_thumb.jpg");
@@ -409,8 +430,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0753", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0753", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0268.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0268_thumb.jpg");
@@ -428,8 +449,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0268", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0268", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0755.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0755_thumb.jpg");
@@ -447,8 +468,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0755", 2, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0755", Orientation.Vertical, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0756.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0756_thumb.jpg");
@@ -466,8 +487,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0756", 2, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0756", Orientation.Vertical, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0792.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0792_thumb.jpg");
@@ -485,8 +506,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0792", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0792", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0944.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0944_thumb.jpg");
@@ -504,8 +525,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0944", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0944", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         		// outra imagem
         		file = new File("C:/play-2.0/ImageDB/public/images/DSC_0999.jpg");
         		fOutput = new File("C:/play-2.0/ImageDB/public/images/DSC_0999_thumb.jpg");
@@ -523,8 +544,8 @@ public class Global extends GlobalSettings {
         		ciList.add(ci);
         		ctList.clear();
         		ctList.add(Category.findByName("Yosemite"));
-        		Image.create(new Image("DCS_0999", 1, 1, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
-        			ciList, "praia, bora, pacifico, resort", ctList));
+        		Image.create(new Image("DCS_0999", Orientation.Horizontal, Type.Photo, true, false, "trererdfgs asdfhbas asdf", DateTime.now().toDate(),
+        			ciList, "praia, bora, pacifico, resort", ctList, segList));
         	} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

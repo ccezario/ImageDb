@@ -7,6 +7,8 @@ import play.db.ebean.*;
 import play.data.format.*;
 import javax.persistence.*;
 
+import com.avaje.ebean.Expr;
+
 @Entity
 public class Image extends Model {
     
@@ -14,15 +16,13 @@ public class Image extends Model {
 	public Long id;
 	@Required
 	public String name;
-	//1 - horizontal 2 - vertical
 	@Required
-	public int orientation;
-	//1 - photo 2 - illustration 3 - vector
+	@Enumerated(EnumType.ORDINAL)
+	public Orientation orientation;
 	@Required
-	public int type;
-	@Required
+	@Enumerated(EnumType.ORDINAL)
+	public Type imageType;
 	public Boolean isEditorial;
-	@Required
 	public Boolean isPopulated;
 	@Required
 	public String useTerm;
@@ -34,14 +34,16 @@ public class Image extends Model {
 	public String tag;
 	@ManyToMany(cascade=CascadeType.PERSIST)
 	public List<Category> category;
+	@ManyToMany(cascade=CascadeType.PERSIST)
+	public List<Segment> segment;
     
-	public Image(String name, int orientation, int type, Boolean isEditorial,
+	public Image(String name, Orientation orientation, Type imageType, Boolean isEditorial,
 			Boolean isPopulated, String useTerm, Date valDate,
-			List<ChildImage> childImage, String tag, List<Category> category) {
+			List<ChildImage> childImage, String tag, List<Category> category, List<Segment> segment) {
 		super();
 		this.name = name;
 		this.orientation = orientation;
-		this.type = type;
+		this.imageType = imageType;
 		this.isEditorial = isEditorial;
 		this.isPopulated = isPopulated;
 		this.useTerm = useTerm;
@@ -49,6 +51,7 @@ public class Image extends Model {
 		this.childImage = childImage;
 		this.tag = tag;
 		this.category = category;
+		this.segment = segment;
 	}
 
 	public static Finder<Long, Image> find = new Finder(Long.class,
@@ -74,7 +77,12 @@ public class Image extends Model {
 		return find.all();
 	}
 	
-	public static List<Image> findByTag(String search) {
-		return find.where().like("tag", "%"+search+"%").findList();
+	public static List<Image> findBySearch(String search) {
+		return find.where(
+					Expr.or(
+						Expr.ilike("name", "%"+search+"%"),
+						Expr.ilike("tag", "%"+search+"%")
+					)
+					).findList();
 	}
 }
